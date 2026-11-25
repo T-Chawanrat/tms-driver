@@ -7,6 +7,7 @@ type DriverLayoutProps = { children: ReactNode; go: Navigate; onBack: () => void
 function pageTitle(screen: DriverScreen) {
   if (screen === "HOME") return "TMS Driver";
   if (screen === "JOBS") return "งานของฉัน";
+  if (screen === "PICKUP_JOBS") return "งานเข้ารับ";
   if (screen === "DELIVERIES") return "ส่งของ";
   if (screen === "CLOSE") return "ปิดบรรทุกและออกนำจ่าย";
   if (screen === "RECIPIENT_CLOSE") return "ปิดงานจัดส่ง";
@@ -36,7 +37,7 @@ export default function DriverLayout({ children, go, onBack, screen }: DriverLay
     };
   }, []);
   const showTopbar = screen !== "DELIVERY_SCAN" && screen !== "ISSUES";
-  const isTaskScreen = ["JOBS", "DELIVERY_CREATE", "DELIVERY_SCAN"].includes(screen);
+  const isTaskScreen = ["JOBS", "PICKUP_JOBS", "DELIVERY_CREATE", "DELIVERY_SCAN"].includes(screen);
   const isDeliveryScreen = ["DELIVERIES", "RECIPIENT_CLOSE", "RETURN_WAREHOUSE"].includes(screen);
   const isIssueScreen = screen === "ISSUES";
 

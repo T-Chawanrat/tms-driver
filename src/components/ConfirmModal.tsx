@@ -10,6 +10,8 @@ type ConfirmModalProps = {
   cancelLabel?: string;
   confirmClassName?: string;
   disabled?: boolean;
+  confirmDisabled?: boolean;
+  animateOnOpen?: boolean;
   onCancel: () => void;
   onConfirm: () => void;
 };
@@ -24,6 +26,8 @@ export default function ConfirmModal({
   cancelLabel = "ยกเลิก",
   confirmClassName = "bg-blue-600 text-white disabled:bg-slate-300",
   disabled = false,
+  confirmDisabled = false,
+  animateOnOpen = false,
   onCancel,
   onConfirm,
 }: ConfirmModalProps) {
@@ -32,7 +36,7 @@ export default function ConfirmModal({
 
   return (
     <div className="fixed inset-0 z-[70] grid place-items-center bg-slate-950/50 p-5" role="presentation">
-      <section className="w-full max-w-sm rounded-3xl bg-white p-5 shadow-2xl" role="dialog" aria-modal="true" aria-labelledby={titleId}>
+      <section className={`w-full max-w-sm rounded-3xl bg-white p-5 shadow-2xl ${animateOnOpen ? "pickup-modal-enter" : ""}`} role="dialog" aria-modal="true" aria-labelledby={titleId}>
         <div className={icon ? "flex items-start gap-3" : ""}>
           {icon ? <span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-blue-100 text-blue-700">{icon}</span> : null}
           <div className="min-w-0">
@@ -43,7 +47,7 @@ export default function ConfirmModal({
         </div>
         <div className="mt-5 grid grid-cols-2 gap-3">
           <button type="button" onClick={onCancel} disabled={disabled} className="h-12 rounded-xl border border-slate-200 text-[15px] font-bold text-slate-600 disabled:opacity-60">{cancelLabel}</button>
-          <button type="button" onClick={onConfirm} disabled={disabled} className={`h-12 rounded-xl text-[15px] font-bold disabled:opacity-50 ${confirmClassName}`}>{confirmLabel}</button>
+          <button type="button" onClick={onConfirm} disabled={disabled || confirmDisabled} className={`h-12 rounded-xl text-[15px] font-bold disabled:opacity-50 ${confirmClassName}`}>{confirmLabel}</button>
         </div>
       </section>
     </div>

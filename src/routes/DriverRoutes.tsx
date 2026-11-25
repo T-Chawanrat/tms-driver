@@ -4,6 +4,9 @@ import DeliveryTruckCreate from "../pages/DeliveryTruckCreate";
 import DeliveryTruckScan from "../pages/DeliveryTruckScan";
 import Home from "../pages/Home";
 import Jobs from "../pages/Jobs";
+import PickupJobs from "../pages/PickupJobs";
+import PickupScan from "../pages/PickupScan";
+import PickupClose from "../pages/PickupClose";
 import IssueChat from "../pages/IssueChat";
 import IssueInbox from "../pages/IssueInbox";
 import Menu from "../pages/Menu";
@@ -38,6 +41,7 @@ function screenFromPath(pathname: string): DriverScreen {
   if (pathname === "/menu/job-history") return "JOB_HISTORY";
   if (pathname === "/menu/contact") return "CONTACT";
   if (pathname === "/jobs") return "JOBS";
+  if (pathname === "/pickup-preview" || pathname === "/pickup-scan" || pathname.startsWith("/pickup-trucks/")) return "PICKUP_JOBS";
   if (pathname === "/trucks/create") return "DELIVERY_CREATE";
   if (pathname.endsWith("/close")) return "CLOSE";
   if (pathname.includes("/trucks/")) return "DELIVERY_SCAN";
@@ -58,6 +62,7 @@ function pathFor(screen: DriverScreen, id?: number) {
     case "JOB_HISTORY": return "/menu/job-history";
     case "CONTACT": return "/menu/contact";
     case "JOBS": return "/jobs";
+    case "PICKUP_JOBS": return "/pickup-preview";
     case "DELIVERY_CREATE": return "/trucks/create";
     case "DELIVERY_SCAN": return id ? `/trucks/${id}/scan` : "/jobs";
     case "CLOSE": return id ? `/trucks/${id}/close` : "/jobs";
@@ -133,6 +138,10 @@ export default function DriverRoutes() {
       <Route path="/menu/job-history" element={<MenuJobHistory />} />
       <Route path="/menu/contact" element={<MenuContact />} />
       <Route path="/jobs" element={<Jobs go={go} />} />
+      <Route path="/pickup-preview" element={<PickupJobs />} />
+      <Route path="/pickup-scan" element={<PickupScan />} />
+      <Route path="/pickup-trucks/:truckId" element={<PickupScan />} />
+      <Route path="/pickup-trucks/:truckId/close" element={<PickupClose />} />
       <Route path="/trucks/create" element={<DeliveryTruckCreate go={go} />} />
       <Route path="/trucks/:truckLoadId/scan" element={<ScanRoute go={go} onBack={onBack} />} />
       <Route path="/trucks/:truckLoadId/close" element={<CloseRoute />} />

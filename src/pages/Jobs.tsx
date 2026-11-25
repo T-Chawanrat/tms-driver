@@ -2,11 +2,12 @@ import { useEffect, useState } from "react";
 import { FilePlus2, Truck } from "lucide-react";
 import AxiosInstance from "../services/http";
 import type { Navigate } from "../types/driver";
+import { Link } from "react-router-dom";
 
 type DriverTruck = {
   truck_load_id: number;
   truck_code: string;
-  status: "DC_TRUCK" | "DC_TRUCK_DC";
+  status: "DC_TRUCK" | "DC_TRUCK_DC" | "PICKUP_TRUCK";
   is_close?: "Y" | "N" | null;
   license_plate?: string | null;
   license_plate_province?: string | null;
@@ -39,6 +40,9 @@ export default function Jobs({ go }: { go: Navigate }) {
 
   return (
     <section className="flex h-[calc(100dvh-130px)] w-full flex-col gap-4 px-4 pt-5 sm:px-6">
+      <Link to="/pickup-preview" className="flex h-12 items-center justify-center gap-2 rounded-xl border border-blue-200 bg-white text-base font-bold text-blue-700">
+        <Truck size={18} /> รายการงานเข้ารับ
+      </Link>
       <button
         className="flex h-12 items-center justify-center gap-2 rounded-xl bg-gradient-to-br from-blue-700 to-blue-600 text-base font-extrabold text-white shadow-lg shadow-blue-600/20"
         onClick={() => go("DELIVERY_CREATE")}
@@ -58,16 +62,17 @@ export default function Jobs({ go }: { go: Navigate }) {
           <div className="grid gap-4">
         {trucks.map((truck) => {
           const isTruckload = truck.status === "DC_TRUCK_DC";
-          const details = isTruckload
+          const isPickup = truck.status === "PICKUP_TRUCK";
+          const details = isPickup ? "งานเข้ารับสินค้า" : isTruckload
             ? "ใบปิดบรรทุก · รอรับลงคลังปลายทาง"
             : [truck.route_code, truck.route_name].filter(Boolean).join(" - ") || "ยังไม่ได้ระบุสายรถ";
           const content = (
             <>
               <span className="grid gap-1 text-left">
                 <span
-                  className={`w-max rounded-full px-2 py-0.5 text-[11px] font-bold ${isTruckload ? "bg-violet-100 text-violet-700" : "bg-blue-100 text-blue-700"}`}
+                  className={`w-max rounded-full px-2 py-0.5 text-[11px] font-bold ${isPickup ? "bg-amber-100 text-amber-800" : isTruckload ? "bg-violet-100 text-violet-700" : "bg-blue-100 text-blue-700"}`}
                 >
-                  {isTruckload ? "TK · ใบปิดบรรทุก" : "DT · ใบรถกระจาย"}
+                  {isPickup ? "PU · ใบรถเข้ารับ" : isTruckload ? "TK · ใบปิดบรรทุก" : "DT · ใบรถกระจาย"}
                 </span>
                 <b className="text-base text-slate-900">{truck.truck_code}</b>
                 <small className="flex items-center gap-1 text-[13px] font-semibold text-slate-600">
@@ -79,7 +84,11 @@ export default function Jobs({ go }: { go: Navigate }) {
               <b className="whitespace-nowrap text-[15px] font-bold text-blue-700">{truck.count_box || 0} SN</b>
             </>
           );
-          return isTruckload ? (
+          return isPickup ? (
+            <Link to={`/pickup-trucks/${truck.truck_load_id}`} className="flex items-center justify-between rounded-2xl border border-slate-200 bg-white p-4 shadow-sm active:scale-[.99]" key={truck.truck_load_id}>
+              {content}
+            </Link>
+          ) : isTruckload ? (
             <div className="flex items-center justify-between rounded-2xl border border-slate-200 bg-white p-4 shadow-sm" key={truck.truck_load_id}>
               {content}
             </div>
